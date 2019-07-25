@@ -47,11 +47,6 @@ Load our data
 topGBEI<-read.csv("data/GBEI/top15GBEI.csv", header=TRUE, na.strings="")
 
 ```
-To use the color palette wes anderson
-```{r}
-#install.packages("wesanderson")
-library(wesanderson)
-```
 
 
 ```{r}
@@ -69,29 +64,36 @@ class(topGBEI)
 class(world) ## spatial map with boudary
 names(world)
 
-indicator  <- semi_join(x = world, 
-                             y = topGBEI, 
+indicator  <- semi_join(x = topGBEI, 
+                             y = world, 
                              by="country")
  
-                   
-```
-```{r}
-### plot the map
-
-plot(indicator['overall'])
-
-legend("bottomleft", 
-       legend = levels(indicator$country), 
-              fill = TRUE, col=c(1:15), cex=0.5)
 ```
 
 ```{r}
+indicator2<-indicator %>% 
+  group_by(country) %>% 
+  mutate(mean_ind=mean(as.numeric(as.character(overall)),na.rm=TRUE)) %>% 
+           select(country,mean_ind) %>% 
+           distinct()
 
 ```
-
-
 
 ```{r}
-unique(indicator$country)
+indicator2
 ```
+```{r}
+#we created a new simple feature object to give spatial component to indicator 2
+sp_ind <- full_join(world,indicator2, by="country")
+```
+
+##The winner plot code!!
+
+```{r}
+ggplot(data=sp_ind)+
+  geom_sf()+
+  geom_sf(aes(fill=mean_ind))
+```
+
+
 

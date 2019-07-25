@@ -1,0 +1,86 @@
+--
+title: "data_camp_pres"
+output: html_document
+---
+Changing directory
+```{r}
+setwd("/nfs/mangrovesglobalization-data") # this connects our cloudbase folder with R 
+```
+
+Creating a shortcut
+```{r}
+ file.symlink(
+     from = '/nfs/mangrovesglobalization-data',
+     to = 'data'
+ )
+```
+
+
+```{r}
+library(tidyverse)
+library(sf)
+library(here)
+library(rgdal)
+library(spData) # Datasets for Spatial Analysis
+
+```
+The sf package is meant to supersede sp, implementing ways to store spatial data in R that integrate with the tidyverse workflow of the packages.
+
+ - us_states    <- US states polygons
+ - world        <- World country polygons
+```{r}
+#install.packages("sp")
+library(sp)
+```
+
+```{r}
+library(rnaturalearth)
+```
+
+
+```{r}
+plot(ne_countries())
+```
+
+Load our data
+```{r}
+topGBEI<-read.csv("data/GBEI/top15GBEI.csv", header=TRUE, na.strings="")
+
+```
+To use the color palette wes anderson
+```{r}
+#install.packages("wesanderson")
+library(wesanderson)
+```
+
+
+```{r}
+# ...... merge your data to sp/sf -----------------------------------------
+
+names(topGBEI)    ## your results
+class(topGBEI)
+
+class(world) ## spatial map with boudary
+names(world)
+
+indicator  <- merge(x = world, 
+                             y = topGBEI, 
+                             by.x = 'name_long', by.y = 'country', all.x = T)
+                    
+### plot the map
+
+plot(indicator['overall'])
+legend("bottomright",
+       legend=levels(indicator$overall),fill=wesanderson)
+
+```
+```{r}
+  #ggplot() + 
+   # geom_sf(data = indicator)+
+    #    geom_sf(data=indicator['overall'])+
+     #   theme(legend.position="right")
+        
+    #geom_sf(data = indicator['world']) +
+    #theme_bw()
+```
+

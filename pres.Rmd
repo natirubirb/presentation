@@ -55,6 +55,12 @@ library(wesanderson)
 
 
 ```{r}
+world<-world%>%
+  rename(country=name_long)
+```
+
+
+```{r}
 # ...... merge your data to sp/sf -----------------------------------------
 
 names(topGBEI)    ## your results
@@ -63,24 +69,29 @@ class(topGBEI)
 class(world) ## spatial map with boudary
 names(world)
 
-indicator  <- merge(x = world, 
+indicator  <- semi_join(x = world, 
                              y = topGBEI, 
-                             by.x = 'name_long', by.y = 'country', all.x = T)
-                    
+                             by="country")
+ 
+                   
+```
+```{r}
 ### plot the map
 
 plot(indicator['overall'])
-legend("bottomright",
-       legend=levels(indicator$overall),fill=wesanderson)
+
+legend("bottomleft", 
+       legend = levels(indicator$country), 
+              fill = TRUE, col=c(1:15), cex=0.5)
+```
+
+```{r}
 
 ```
+
+
+
 ```{r}
-  #ggplot() + 
-   # geom_sf(data = indicator)+
-    #    geom_sf(data=indicator['overall'])+
-     #   theme(legend.position="right")
-        
-    #geom_sf(data = indicator['world']) +
-    #theme_bw()
+unique(indicator$country)
 ```
 

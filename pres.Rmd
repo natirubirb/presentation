@@ -96,4 +96,12 @@ ggplot(data=sp_ind)+
 ```
 
 
+```{r}
+ggplot(data=sp_ind)+
+  geom_sf()+
+  geom_sf(aes(fill=mean_ind))+ggtitle("Global Biodiversity Engagement Index (GBEI) \n Data for Top Mangrove-Holding Countries")+ theme(plot.title = element_text(hjust =0.5))+ labs(fill = "GBEI")
+
+
+
+```
 
